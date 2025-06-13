@@ -60,3 +60,53 @@ func (c *Client) ListLocationAreas(pageURL *string) (LocationAreasResp, error) {
 	return locationAreasRep, nil
 
 }
+
+func (c *Client) GetLocationAreas(locationAreaName string) (LocationArea, error) {
+	endpoint := "location-area/" + locationAreaName
+	fullURL := baseURL + endpoint
+
+	// Check the cache
+	dat, ok := c.cache.Get(fullURL)
+	if ok {
+		// hit cache
+		log.Print("Cache hit for URL: ", fullURL)
+		locationArea := LocationArea{}
+		err := json.Unmarshal(dat, &locationArea)
+		if err != nil {
+			return LocationArea{}, fmt.Errorf("failed to unmarshal response: %w", err)
+		}
+		return locationArea, nil
+	}
+	log.Print("Cache miss for URL: ", fullURL)
+
+	req, err := http.NewRequest("GET", fullURL, nil)
+	if err != nil {
+		return LocationArea{}, err
+	}
+
+	resp, err := c.httpClient.Do(req)
+	if err != nil {
+		return LocationArea{}, err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode > 399 {
+		return LocationArea{}, fmt.Errorf("failed to fetch location areas: %s", resp.Status)
+	}
+
+	data, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return LocationArea{}, fmt.Errorf("failed to read response body: %w", err)
+	}
+
+	locationArea := LocationArea{}
+	err = json.Unmarshal(data, &locationArea)
+	if err != nil {
+		return LocationArea{}, fmt.Errorf("failed to unmarshal response: %w", err)
+	}
+
+	c.cache.Add(fullURL, data)
+
+	return locationArea, nil
+
+}
