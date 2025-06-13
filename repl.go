@@ -30,33 +30,41 @@ func startRepl(cfg *config) {
 			continue
 		}
 
-		command.callback(cfg)
-
+		err := command.callback(cfg)
+		if err != nil {
+			fmt.Println("Error:", err.Error())
+			continue
+		}
 	}
 }
 
 type cliCommand struct {
-	name string
+	name        string
 	description string
-	callback func(*config) error
+	callback    func(*config) error
 }
 
 func getCommands() map[string]cliCommand {
 	return map[string]cliCommand{
 		"help": {
-			name: "help",
+			name:        "help",
 			description: "Show this help menu",
-			callback: callbackHelp,
+			callback:    callbackHelp,
 		},
 		"map": {
-			name: "map",
-			description: "List available location areas",
-			callback: callbackMap,
+			name:        "map",
+			description: "List the next page of location areas",
+			callback:    callbackMap,
+		},
+		"map-back": {
+			name:        "map-back",
+			description: "Go back to the previous page of location areas",
+			callback:    callbackMapBack,
 		},
 		"exit": {
-			name: "exit",
+			name:        "exit",
 			description: "Exit the Pokedex REPL",
-			callback: callbackExit,
+			callback:    callbackExit,
 		},
 	}
 }
