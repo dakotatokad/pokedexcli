@@ -1,18 +1,20 @@
-package main
+package pokecommand
 
 import (
 	"errors"
 	"fmt"
+
+	"github.com/dakotatokad/pokedexcli/internal/pokeconfig"
 )
 
-func callbackInspect(cfg *config, args ...string) error {
+func callbackInspect(cfg *pokeconfig.Config, args ...string) error {
 
 	if len(args) != 1 {
 		return errors.New("catch command requires exactly one argument: the name of the pokemon")
 	}
 	pokemonName := args[0]
 
-	pokemon, ok := cfg.caughtPokemon[pokemonName]
+	pokemon, ok := cfg.CaughtPokemon[pokemonName]
 	if !ok {
 		return fmt.Errorf("you haven't caught %s yet", pokemonName)
 	}

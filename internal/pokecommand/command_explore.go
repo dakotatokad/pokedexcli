@@ -1,18 +1,20 @@
-package main
+package pokecommand
 
 import (
 	"errors"
 	"fmt"
+
+	"github.com/dakotatokad/pokedexcli/internal/pokeconfig"
 )
 
-func callbackExplore(cfg *config, args ...string) error {
+func callbackExplore(cfg *pokeconfig.Config, args ...string) error {
 
 	if len(args) != 1 {
 		return errors.New("explore command requires exactly one argument: the name of the location area")
 	}
 	locationAreaName := args[0]
 
-	resp, err := cfg.pokeapiClient.GetLocationAreas(locationAreaName)
+	resp, err := cfg.PokeapiClient.GetLocationAreas(locationAreaName)
 	if err != nil {
 		println("Error fetching location areas:", err.Error())
 	}

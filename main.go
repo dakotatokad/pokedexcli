@@ -4,23 +4,18 @@ import (
 	"time"
 
 	"github.com/dakotatokad/pokedexcli/internal/pokeapi"
+	"github.com/dakotatokad/pokedexcli/internal/pokeconfig"
+	"github.com/dakotatokad/pokedexcli/internal/pokerepl"
 )
-
-type config struct {
-	pokeapiClient           pokeapi.Client
-	nextLocationAreaURL     *string
-	previousLocationAreaURL *string
-	caughtPokemon           map[string]pokeapi.Pokemon
-}
 
 func main() {
 
-	cfg := config{
-		pokeapiClient:           pokeapi.NewClient(time.Hour),
-		nextLocationAreaURL:     nil,
-		previousLocationAreaURL: nil,
-		caughtPokemon:           make(map[string]pokeapi.Pokemon),
+	cfg := pokeconfig.Config{
+		PokeapiClient:           pokeapi.NewClient(time.Hour),
+		NextLocationAreaURL:     nil,
+		PreviousLocationAreaURL: nil,
+		CaughtPokemon:           make(map[string]pokeapi.Pokemon),
 	}
 
-	startRepl(&cfg)
+	pokerepl.StartRepl(&cfg)
 }
