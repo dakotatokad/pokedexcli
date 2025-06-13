@@ -20,24 +20,40 @@ func startRepl() {
 		if len(cleaned) == 0 {
 			continue
 		}
-		command := cleaned[0]
+		commandName := cleaned[0]
 
-		switch command {
-		case "help":
-			fmt.Println("Welcome to Pokedex help menu!")
-			fmt.Println("Available commands:")
-			fmt.Println("  help - Show this help menu")
-			fmt.Println("  add <pokemon> - Add a Pokémon to your Pokedex")
-			fmt.Println("  list - List all Pokémon in your Pokedex")
-			fmt.Println("  remove <pokemon> - Remove a Pokémon from your Pokedex")
-			fmt.Println("  exit - Exit the Pokedex REPL")
-			case "exit":
-				os.Exit(0)
-			default:
-				fmt.Println("Invalid command: ", command)
+		availableCommands := getCommands()
+
+		command, ok := availableCommands[commandName]
+		if !ok {
+			fmt.Println("Unknown command:", commandName)
+			continue
 		}
 
-		}
+		command.callback()
+
+	}
+}
+
+type cliCommand struct {
+	name string
+	description string
+	callback func()
+}
+
+func getCommands() map[string]cliCommand {
+	return map[string]cliCommand{
+		"help": {
+			name: "help",
+			description: "Show this help menu",
+			callback: callbackHelp,
+		},
+		"exit": {
+			name: "exit",
+			description: "Exit the Pokedex REPL",
+			callback: callbackExit,
+		},
+	}
 }
 
 func cleanInput(str string) []string {
