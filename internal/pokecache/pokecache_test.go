@@ -1,6 +1,8 @@
 package pokecache
 
-import "testing"
+import (
+	"testing"
+)
 
 func TestCreateCacheNotNil(t *testing.T) {
 	cache := NewCache()
@@ -11,12 +13,26 @@ func TestCreateCacheNotNil(t *testing.T) {
 
 func TestCreateCache(t *testing.T) {
 	cache := NewCache()
-	cache.Add("testKey", []byte("testValue"))
-	actual, ok := cache.Get("testKey")
-	if !ok {
-		t.Error("Expected to find 'testKey' in cache, but it was not found")
+
+	cases := []struct {
+		inputKey string
+		inputVal []byte
+	}{
+		{inputKey: "testKey", inputVal: []byte("testValue")},
+		{inputKey: "anotherKey", inputVal: []byte("anotherValue")},
+		{inputKey: "emptyKey", inputVal: []byte("")},
 	}
-	if string(actual) != "testValue" {
-		t.Errorf("Expected 'testValue', got '%s'", actual)
+
+	for _, cas := range cases {
+		cache.Add(cas.inputKey, cas.inputVal)
+		actual, ok := cache.Get(cas.inputKey)
+		if !ok {
+			t.Errorf("Expected to find '%s' in cache, but it was not found", cas.inputKey)
+			continue
+		}
+		if string(actual) != string(cas.inputVal) {
+			t.Errorf("Expected '%s', got '%s'", cas.inputVal, actual)
+			continue
+		}
 	}
 }
