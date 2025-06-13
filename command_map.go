@@ -2,14 +2,11 @@ package main
 
 import (
 	"fmt"
-
-	"github.com/dakotatokad/pokedexcli/internal/pokeapi"
 )
 
-func callbackMap() error {
-	pokeapiClient := pokeapi.NewClient()
+func callbackMap(cfg *config) error {
 
-	resp, err := pokeapiClient.ListLocationAreas()
+	resp, err := cfg.pokeapiClient.ListLocationAreas()
 	if err != nil {
 		println("Error fetching location areas:", err.Error())
 	}
@@ -17,6 +14,9 @@ func callbackMap() error {
 	for _, area := range resp.Results {
 		fmt.Println(area.Name)
 	}
+
+	cfg.nextLocationAreaURL = resp.Next
+	cfg.previousLocationAreaURL = resp.Previous
 
 	return nil
 }
