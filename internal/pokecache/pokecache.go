@@ -15,6 +15,7 @@ func NewCache(interval time.Duration) Cache {
 	c := Cache{ 
 		cache: make(map[string]cacheEntry),
 	}
+	// TODO: Handle a possible race condition here if the reapLoop conflicts with accessing the cache
 	go c.reapLoop(interval) // Start the reap loop with a 5-minute interval
 	return c
 }
