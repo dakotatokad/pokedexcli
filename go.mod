@@ -1,0 +1,3 @@
+module github.com/dakotatokad/pokedexcli
+
+go 1.24.3
